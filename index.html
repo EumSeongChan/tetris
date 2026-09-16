@@ -272,12 +272,19 @@
 
             .touch-controls {
                 display: flex;
-                flex-wrap: wrap;
+                flex-wrap: nowrap;
                 justify-content: center;
                 align-items: center;
-                gap: 14px;
+                gap: 10px;
+                width: min(90vw, 340px);
                 margin-top: 15px;
                 padding-bottom: env(safe-area-inset-bottom);
+            }
+
+            .touch-btn {
+                flex: 1 1 0;
+                min-width: 48px;
+                max-width: 66px;
             }
         }
     </style>
@@ -337,10 +344,10 @@
     </div>
 
     <div class="touch-controls">
-        <div class="touch-btn" id="rotateBtn">↻</div>
-        <div class="touch-btn" id="dropBtn">⤓</div>
         <div class="touch-btn" id="leftBtn">◀</div>
         <div class="touch-btn" id="downBtn">▼</div>
+        <div class="touch-btn" id="rotateBtn">↻</div>
+        <div class="touch-btn" id="dropBtn">⤓</div>
         <div class="touch-btn" id="rightBtn">▶</div>
     </div>
 
