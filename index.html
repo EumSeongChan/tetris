@@ -159,9 +159,128 @@
             margin: 10px 0;
             text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
         }
+
+        .app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .touch-controls {
+            display: none;
+        }
+
+        .touch-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.15);
+            border: 2px solid rgba(0, 212, 255, 0.6);
+            color: #00d4ff;
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            transition: transform 0.1s, background 0.1s;
+        }
+
+        .touch-btn:active {
+            transform: scale(0.85);
+            background: rgba(0, 212, 255, 0.35);
+        }
+
+        @media (max-width: 900px), (pointer: coarse) {
+            body {
+                overflow: auto;
+            }
+
+            .game-container {
+                flex-direction: column;
+                align-items: center;
+                padding: 10px;
+                gap: 15px;
+            }
+
+            .side-panel {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+                min-width: 0;
+                max-width: 100%;
+            }
+
+            .side-panel .panel-box {
+                padding: 8px 12px;
+            }
+
+            .panel-title {
+                font-size: 11px;
+                margin-bottom: 4px;
+            }
+
+            .stat-value {
+                font-size: 18px;
+            }
+
+            .next-piece {
+                min-height: 60px;
+            }
+
+            .next-piece canvas {
+                width: 70px;
+                height: 56px;
+            }
+
+            .controls {
+                display: none;
+            }
+
+            .game-board {
+                width: min(90vw, 300px);
+                height: auto;
+            }
+
+            .overlay h1 {
+                font-size: 26px;
+            }
+
+            .overlay h2 {
+                font-size: 20px;
+            }
+
+            .overlay p {
+                font-size: 14px;
+            }
+
+            .final-score {
+                font-size: 26px;
+            }
+
+            .btn {
+                padding: 10px 22px;
+                font-size: 14px;
+            }
+
+            .touch-controls {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 14px;
+                margin-top: 15px;
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="app">
     <div class="game-container">
         <div class="side-panel">
             <div class="panel-box">
@@ -212,6 +331,14 @@
                 <button class="btn" id="restartBtn">다시하기</button>
             </div>
         </div>
+    </div>
+
+    <div class="touch-controls">
+        <div class="touch-btn" id="rotateBtn">↻</div>
+        <div class="touch-btn" id="dropBtn">⤓</div>
+        <div class="touch-btn" id="leftBtn">◀</div>
+        <div class="touch-btn" id="downBtn">▼</div>
+        <div class="touch-btn" id="rightBtn">▶</div>
     </div>
 
     <script src="tetris.js"></script>

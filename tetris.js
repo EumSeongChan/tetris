@@ -62,6 +62,12 @@ class Tetris {
         document.getElementById('startBtn').addEventListener('click', () => this.start());
         document.getElementById('resumeBtn').addEventListener('click', () => this.togglePause());
         document.getElementById('restartBtn').addEventListener('click', () => this.restart());
+
+        document.getElementById('leftBtn').addEventListener('click', () => this.pressAction('left'));
+        document.getElementById('rightBtn').addEventListener('click', () => this.pressAction('right'));
+        document.getElementById('downBtn').addEventListener('click', () => this.pressAction('down'));
+        document.getElementById('rotateBtn').addEventListener('click', () => this.pressAction('rotate'));
+        document.getElementById('dropBtn').addEventListener('click', () => this.pressAction('drop'));
     }
 
     handleKey(e) {
@@ -76,22 +82,44 @@ class Tetris {
 
         switch(e.key) {
             case 'ArrowLeft':
-                this.move(-1, 0);
+                this.pressAction('left');
                 break;
             case 'ArrowRight':
-                this.move(1, 0);
+                this.pressAction('right');
                 break;
             case 'ArrowDown':
+                this.pressAction('down');
+                break;
+            case 'ArrowUp':
+                this.pressAction('rotate');
+                break;
+            case ' ':
+                e.preventDefault();
+                this.pressAction('drop');
+                break;
+        }
+    }
+
+    pressAction(action) {
+        if (!this.started || this.gameOver || this.paused) return;
+
+        switch(action) {
+            case 'left':
+                this.move(-1, 0);
+                break;
+            case 'right':
+                this.move(1, 0);
+                break;
+            case 'down':
                 if (this.move(0, 1)) {
                     this.score += 1;
                     this.updateStats();
                 }
                 break;
-            case 'ArrowUp':
+            case 'rotate':
                 this.rotate();
                 break;
-            case ' ':
-                e.preventDefault();
+            case 'drop':
                 this.hardDrop();
                 break;
         }
