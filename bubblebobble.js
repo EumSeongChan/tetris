@@ -5,7 +5,8 @@ const W = COLS * TILE;
 const H = ROWS * TILE;
 const FLOOR_ROW = ROWS - 1;
 const GRAVITY = 2000;
-const JUMP_V = 720;
+const GRAVITY_RISE = 1500;
+const JUMP_V = 760;
 const MAX_FALL = 620;
 const PLAYER_SPEED = 190;
 const MAX_BUBBLES = 6;
@@ -324,6 +325,7 @@ class BubbleBobble {
             dir: 1,
             onGround: false,
             coyote: 0,
+            jumpBuffer: 0,
             firing: 0,
             inv: 0,
             face: 1
@@ -467,22 +469,29 @@ class BubbleBobble {
             p.vx = 0;
         }
 
-        if (!this.oldJump && jump && (p.onGround || p.coyote > 0)) {
+        if (!this.oldJump && jump) {
+            p.jumpBuffer = 0.15;
+        } else {
+            p.jumpBuffer = Math.max(0, p.jumpBuffer - dt);
+        }
+
+        if (p.jumpBuffer > 0 && (p.onGround || p.coyote > 0)) {
             p.vy = -JUMP_V;
             p.onGround = false;
             p.coyote = 0;
+            p.jumpBuffer = 0;
             this.playTone(340, 0.12, 'square', 0.06);
-        } else if (this.oldJump && !jump && p.vy < -120) {
+        } else if (this.oldJump && !jump && p.vy < -100) {
             p.vy *= 0.45;
         }
         this.oldJump = jump;
 
-        p.vy = Math.min(p.vy + GRAVITY * dt, MAX_FALL);
+        p.vy = Math.min(p.vy + (p.vy < 0 ? GRAVITY_RISE : GRAVITY) * dt, MAX_FALL);
         this.moveEntity(p, p.vx * dt, 0);
         const res = this.moveEntity(p, 0, p.vy * dt);
         if (res.hitGround) {
             p.onGround = true;
-            p.coyote = 0.18;
+            p.coyote = 0.2;
         } else {
             p.onGround = false;
             if (p.coyote > 0) p.coyote -= dt;
