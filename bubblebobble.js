@@ -244,12 +244,30 @@ class BubbleBobble {
             if (!this.solidBox(nx, e.y, e.w, e.h)) {
                 e.x = nx;
             } else {
+                const r0 = Math.floor(e.y / TILE);
+                const r1 = Math.floor((e.y + e.h - 0.5) / TILE);
+                let blockCol = null;
                 if (dx > 0) {
-                    const col = Math.floor((nx + e.w - 0.5) / TILE);
-                    e.x = col * TILE - e.w;
+                    const cEnd = Math.floor((nx + e.w - 0.5) / TILE);
+                    for (let c = Math.floor(nx / TILE); c <= cEnd && blockCol === null; c++) {
+                        for (let r = r0; r <= r1; r++) {
+                            if (this.isSolid(c, r)) { blockCol = c; break; }
+                        }
+                    }
                 } else {
-                    const col = Math.floor((nx + 0.5) / TILE);
-                    e.x = (col + 1) * TILE;
+                    const cEnd = Math.floor((nx + e.w - 0.5) / TILE);
+                    for (let c = cEnd; c >= Math.floor(nx / TILE) && blockCol === null; c--) {
+                        for (let r = r0; r <= r1; r++) {
+                            if (this.isSolid(c, r)) { blockCol = c; break; }
+                        }
+                    }
+                }
+                if (blockCol === null) {
+                    e.x = nx;
+                } else if (dx > 0) {
+                    e.x = blockCol * TILE - e.w;
+                } else {
+                    e.x = (blockCol + 1) * TILE;
                 }
                 e.vx = 0;
             }
@@ -259,14 +277,32 @@ class BubbleBobble {
             if (!this.solidBox(e.x, ny, e.w, e.h)) {
                 e.y = ny;
             } else {
+                const c0 = Math.floor(e.x / TILE);
+                const c1 = Math.floor((e.x + e.w - 0.5) / TILE);
+                let blockRow = null;
                 if (dy > 0) {
-                    const row = Math.floor((ny + e.h - 0.5) / TILE);
-                    e.y = row * TILE - e.h;
+                    const rEnd = Math.floor((ny + e.h - 0.5) / TILE);
+                    for (let r = Math.floor(ny / TILE); r <= rEnd && blockRow === null; r++) {
+                        for (let c = c0; c <= c1; c++) {
+                            if (this.isSolid(c, r)) { blockRow = r; break; }
+                        }
+                    }
+                } else {
+                    const rEnd = Math.floor((ny + e.h - 0.5) / TILE);
+                    for (let r = rEnd; r >= Math.floor(ny / TILE) && blockRow === null; r--) {
+                        for (let c = c0; c <= c1; c++) {
+                            if (this.isSolid(c, r)) { blockRow = r; break; }
+                        }
+                    }
+                }
+                if (blockRow === null) {
+                    e.y = ny;
+                } else if (dy > 0) {
+                    e.y = blockRow * TILE - e.h;
                     e.vy = 0;
                     res.hitGround = true;
                 } else {
-                    const row = Math.floor((ny + 0.5) / TILE);
-                    e.y = (row + 1) * TILE;
+                    e.y = (blockRow + 1) * TILE;
                     e.vy = 0;
                     res.hitCeil = true;
                 }
