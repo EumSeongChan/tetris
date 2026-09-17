@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>테트리스</title>
+    <title>버블보블</title>
     <style>
         * {
             margin: 0;
@@ -15,7 +15,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(135deg, #0b0f2a 0%, #14245e 50%, #0b2b4d 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -36,11 +36,11 @@
         }
 
         .game-board {
-            border: 4px solid #00d4ff;
+            border: 4px solid #a0e8ff;
             border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5),
-                        inset 0 0 30px rgba(0, 0, 0, 0.3);
-            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 30px rgba(120, 210, 255, 0.55),
+                        inset 0 0 30px rgba(0, 0, 0, 0.4);
+            background: #06101f;
         }
 
         .side-panel {
@@ -52,14 +52,14 @@
 
         .panel-box {
             background: rgba(0, 0, 0, 0.6);
-            border: 2px solid #00d4ff;
+            border: 2px solid #a0e8ff;
             border-radius: 10px;
             padding: 15px;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 15px rgba(120, 210, 255, 0.3);
         }
 
         .panel-title {
-            color: #00d4ff;
+            color: #a0e8ff;
             font-size: 14px;
             font-weight: bold;
             text-transform: uppercase;
@@ -68,23 +68,22 @@
             text-align: center;
         }
 
-        .next-piece {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 80px;
-        }
-
-        .next-piece canvas {
-            border-radius: 5px;
-        }
-
         .stat-value {
             color: #fff;
             font-size: 24px;
             font-weight: bold;
             text-align: center;
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+            text-shadow: 0 0 10px rgba(120, 210, 255, 0.8);
+        }
+
+        .stat-value.high {
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        .stat-value.lives {
+            color: #ff6b8a;
+            text-shadow: 0 0 10px rgba(255, 107, 138, 0.8);
         }
 
         .controls {
@@ -94,7 +93,7 @@
         }
 
         .controls span {
-            color: #00d4ff;
+            color: #a0e8ff;
             font-weight: bold;
         }
 
@@ -111,6 +110,8 @@
             align-items: center;
             border-radius: 10px;
             z-index: 10;
+            text-align: center;
+            padding: 20px;
         }
 
         .overlay.hidden {
@@ -118,27 +119,54 @@
         }
 
         .overlay h1 {
-            color: #00d4ff;
-            font-size: 36px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+            color: #a0e8ff;
+            font-size: 40px;
+            margin-bottom: 6px;
+            text-shadow: 0 0 20px rgba(120, 210, 255, 0.9);
+        }
+
+        .overlay h1.bubble-title {
+            color: #7ff0a0;
+            text-shadow: 0 0 25px rgba(127, 240, 160, 0.9);
         }
 
         .overlay h2 {
-            color: #ff6b6b;
+            color: #ff6b8a;
             font-size: 28px;
             margin-bottom: 10px;
         }
 
+        .overlay h2.clear {
+            color: #7ff0a0;
+            font-size: 32px;
+            margin-bottom: 4px;
+        }
+
         .overlay p {
             color: #aaa;
-            font-size: 16px;
-            margin-bottom: 20px;
+            font-size: 14px;
+            margin-bottom: 6px;
+            line-height: 1.7;
+        }
+
+        .overlay .level-name {
+            color: #ffd700;
+            font-size: 18px;
+            margin-bottom: 14px;
+            font-weight: bold;
+        }
+
+        .final-score {
+            color: #ffd700;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 8px 0;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
         }
 
         .btn {
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            color: #fff;
+            background: linear-gradient(135deg, #a0e8ff, #4090c0);
+            color: #06101f;
             border: none;
             padding: 12px 30px;
             font-size: 16px;
@@ -148,19 +176,12 @@
             transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-top: 8px;
         }
 
         .btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
-        }
-
-        .final-score {
-            color: #ffd700;
-            font-size: 32px;
-            font-weight: bold;
-            margin: 10px 0;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            box-shadow: 0 0 20px rgba(160, 232, 255, 0.7);
         }
 
         .app {
@@ -178,10 +199,10 @@
             gap: 10px;
             z-index: 100;
             background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #00d4ff;
+            border: 2px solid #a0e8ff;
             border-radius: 25px;
             padding: 6px 10px;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+            box-shadow: 0 0 15px rgba(160, 232, 255, 0.4);
         }
 
         .game-nav a {
@@ -195,13 +216,13 @@
         }
 
         .game-nav a:hover {
-            background: rgba(0, 212, 255, 0.3);
-            color: #00d4ff;
+            background: rgba(160, 232, 255, 0.3);
+            color: #a0e8ff;
         }
 
         .game-nav a.active {
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            color: #fff;
+            background: linear-gradient(135deg, #a0e8ff, #4090c0);
+            color: #06101f;
         }
 
         .touch-controls {
@@ -212,9 +233,9 @@
             width: 64px;
             height: 64px;
             border-radius: 50%;
-            background: rgba(0, 212, 255, 0.15);
-            border: 2px solid rgba(0, 212, 255, 0.6);
-            color: #00d4ff;
+            background: rgba(160, 232, 255, 0.15);
+            border: 2px solid rgba(160, 232, 255, 0.6);
+            color: #a0e8ff;
             font-size: 26px;
             display: flex;
             align-items: center;
@@ -227,9 +248,10 @@
             transition: transform 0.1s, background 0.1s;
         }
 
+        .touch-btn.active,
         .touch-btn:active {
             transform: scale(0.85);
-            background: rgba(0, 212, 255, 0.35);
+            background: rgba(160, 232, 255, 0.35);
         }
 
         @media (max-width: 900px), (pointer: coarse) {
@@ -266,21 +288,12 @@
                 font-size: 18px;
             }
 
-            .next-piece {
-                min-height: 60px;
-            }
-
-            .next-piece canvas {
-                width: 70px;
-                height: 56px;
-            }
-
             .controls {
                 display: none;
             }
 
             .game-board {
-                width: min(90vw, 300px);
+                width: min(94vw, 684px);
                 height: auto;
             }
 
@@ -292,8 +305,12 @@
                 font-size: 20px;
             }
 
+            .overlay h2.clear {
+                font-size: 22px;
+            }
+
             .overlay p {
-                font-size: 14px;
+                font-size: 13px;
             }
 
             .final-score {
@@ -310,8 +327,8 @@
                 flex-wrap: nowrap;
                 justify-content: center;
                 align-items: center;
-                gap: 10px;
-                width: min(90vw, 340px);
+                gap: 12px;
+                width: min(94vw, 420px);
                 margin-top: 15px;
                 padding-bottom: env(safe-area-inset-bottom);
             }
@@ -319,58 +336,70 @@
             .touch-btn {
                 flex: 1 1 0;
                 min-width: 48px;
-                max-width: 66px;
+                max-width: 70px;
             }
         }
     </style>
 </head>
 <body>
     <div class="game-nav">
-        <a href="index.html" class="active">테트리스</a>
-        <a href="bubblebobble.html">버블보블</a>
+        <a href="index.html">테트리스</a>
+        <a href="bubblebobble.html" class="active">버블보블</a>
     </div>
     <div class="app">
     <div class="game-container">
         <div class="side-panel">
             <div class="panel-box">
-                <div class="panel-title">Next</div>
-                <div class="next-piece">
-                    <canvas id="nextPiece" width="100" height="80"></canvas>
-                </div>
-            </div>
-            <div class="panel-box">
                 <div class="panel-title">Score</div>
                 <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="panel-box">
+                <div class="panel-title">High</div>
+                <div class="stat-value high" id="highScore">0</div>
+            </div>
+            <div class="panel-box">
+                <div class="panel-title">Lives</div>
+                <div class="stat-value lives" id="lives">♥♥♥</div>
             </div>
             <div class="panel-box">
                 <div class="panel-title">Level</div>
                 <div class="stat-value" id="level">1</div>
             </div>
             <div class="panel-box">
-                <div class="panel-title">Lines</div>
-                <div class="stat-value" id="lines">0</div>
+                <div class="panel-title">Enemies</div>
+                <div class="stat-value" id="enemies">0</div>
             </div>
             <div class="panel-box controls">
-                <div><span>←→</span> 이동</div>
-                <div><span>↑</span> 회전</div>
-                <div><span>↓</span> 소프트 드롭</div>
-                <div><span>Space</span> 하드 드롭</div>
+                <div><span>← →</span> 이동</div>
+                <div><span>↑ / W / Space</span> 점프</div>
+                <div><span>J / Z / Shift</span> 거품 쏘기</div>
+                <div><span>↑유지 + 쏘기</span> 위로 발사</div>
                 <div><span>P</span> 일시정지</div>
             </div>
         </div>
 
         <div class="game-board-container">
-            <canvas id="gameBoard" class="game-board" width="300" height="600"></canvas>
+            <canvas id="gameBoard" class="game-board" width="684" height="468"></canvas>
 
             <div class="overlay" id="startScreen">
-                <h1>테트리스</h1>
-                <p>클래식 퍼즐 게임</p>
+                <h1 class="bubble-title">버블보블</h1>
+                <p>거품으로 몬스터를 가두고 터뜨려 모두 물리치세요!</p>
+                <p>거품 위에 올라타거나 닿으면 터집니다.</p>
+                <div class="level-name">스테이지가 끝나면 그만큼 오릅니다!</div>
                 <button class="btn" id="startBtn">게임 시작</button>
             </div>
 
             <div class="overlay hidden" id="pauseScreen">
                 <h1>일시정지</h1>
                 <button class="btn" id="resumeBtn">계속하기</button>
+            </div>
+
+            <div class="overlay hidden" id="clearScreen">
+                <h2 class="clear">레벨 클리어!</h2>
+                <div class="level-name" id="clearLevelName"></div>
+                <p>클리어 보너스</p>
+                <div class="final-score" id="clearBonus">+1000</div>
+                <button class="btn" id="nextBtn">다음 레벨</button>
             </div>
 
             <div class="overlay hidden" id="gameOverScreen">
@@ -384,12 +413,11 @@
 
     <div class="touch-controls">
         <div class="touch-btn" id="leftBtn">◀</div>
-        <div class="touch-btn" id="downBtn">▼</div>
-        <div class="touch-btn" id="rotateBtn">↻</div>
-        <div class="touch-btn" id="dropBtn">⤓</div>
+        <div class="touch-btn" id="jumpBtn">▲</div>
+        <div class="touch-btn" id="shootBtn">◎</div>
         <div class="touch-btn" id="rightBtn">▶</div>
     </div>
 
-    <script src="tetris.js"></script>
+    <script src="bubblebobble.js"></script>
 </body>
 </html>
