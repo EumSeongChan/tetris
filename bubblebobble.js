@@ -442,12 +442,12 @@ class BubbleBobble {
     }
 
     handleInput() {
-        const left = this.keys['ArrowLeft'] || this.keys['KeyA'] || this.keys['touchLeft'];
-        const right = this.keys['ArrowRight'] || this.keys['KeyD'] || this.keys['touchRight'];
+        const left = this.keys['ArrowLeft'] || this.keys['touchLeft'];
+        const right = this.keys['ArrowRight'] || this.keys['touchRight'];
         this.keys['_left'] = !!left;
         this.keys['_right'] = !!right;
-        this.keys['_jump'] = !!(this.keys['ArrowUp'] || this.keys['KeyW'] || this.keys['Space'] || this.keys['touchJump']);
-        this.keys['_shoot'] = !!(this.keys['KeyJ'] || this.keys['KeyK'] || this.keys['KeyZ'] || this.keys['ShiftLeft'] || this.keys['ShiftRight'] || this.keys['touchShoot']);
+        this.keys['_jump'] = !!(this.keys['Space'] || this.keys['touchJump']);
+        this.keys['_shoot'] = !!(this.keys['KeyC'] || this.keys['touchShoot']);
         this.keys['_up'] = !!(this.keys['ArrowUp'] || this.keys['KeyW']);
     }
 
