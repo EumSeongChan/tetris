@@ -1,395 +1,78 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-WTGMJXJQ');</script>
+    <!-- End Google Tag Manager -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>테트리스</title>
+    <title>○○호텔</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #222; }
+        header {
+            background: linear-gradient(135deg, #0f3460, #16213e);
+            color: #fff; padding: 60px 20px; text-align: center;
         }
-
-        body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
+        header h1 { font-size: 40px; letter-spacing: 2px; }
+        header p { margin-top: 10px; color: #9db4d0; }
+        .rooms { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 40px 20px; }
+        .room {
+            width: 260px; border: 1px solid #ddd; border-radius: 12px;
+            overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-
-        .game-container {
-            display: flex;
-            gap: 30px;
-            align-items: flex-start;
-            padding: 20px;
+        .room .thumb { height: 150px; background: #c9d6e4; }
+        .room .body { padding: 16px; }
+        .room h3 { margin-bottom: 8px; }
+        .room p { color: #666; font-size: 14px; }
+        .cta { text-align: center; padding: 40px 20px 80px; }
+        #reservationBtn {
+            background: linear-gradient(135deg, #ff7b00, #ff5500);
+            color: #fff; border: none; padding: 16px 48px; font-size: 18px;
+            font-weight: bold; border-radius: 30px; cursor: pointer;
+            box-shadow: 0 6px 18px rgba(255, 85, 0, 0.4); transition: transform 0.2s;
         }
-
-        .game-board-container {
-            position: relative;
-        }
-
-        .game-board {
-            border: 4px solid #00d4ff;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5),
-                        inset 0 0 30px rgba(0, 0, 0, 0.3);
-            background: rgba(0, 0, 0, 0.8);
-        }
-
-        .side-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            min-width: 150px;
-        }
-
-        .panel-box {
-            background: rgba(0, 0, 0, 0.6);
-            border: 2px solid #00d4ff;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
-        }
-
-        .panel-title {
-            color: #00d4ff;
-            font-size: 14px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .next-piece {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 80px;
-        }
-
-        .next-piece canvas {
-            border-radius: 5px;
-        }
-
-        .stat-value {
-            color: #fff;
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
-        }
-
-        .controls {
-            font-size: 11px;
-            color: #aaa;
-            line-height: 1.8;
-        }
-
-        .controls span {
-            color: #00d4ff;
-            font-weight: bold;
-        }
-
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 10px;
-            z-index: 10;
-        }
-
-        .overlay.hidden {
-            display: none;
-        }
-
-        .overlay h1 {
-            color: #00d4ff;
-            font-size: 36px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
-        }
-
-        .overlay h2 {
-            color: #ff6b6b;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .overlay p {
-            color: #aaa;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            color: #fff;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
-        }
-
-        .final-score {
-            color: #ffd700;
-            font-size: 32px;
-            font-weight: bold;
-            margin: 10px 0;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
-        }
-
-        .app {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .game-nav {
-            position: fixed;
-            top: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #00d4ff;
-            border-radius: 25px;
-            padding: 6px 10px;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
-        }
-
-        .game-nav a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: bold;
-            padding: 6px 16px;
-            border-radius: 20px;
-            transition: all 0.3s;
-        }
-
-        .game-nav a:hover {
-            background: rgba(0, 212, 255, 0.3);
-            color: #00d4ff;
-        }
-
-        .game-nav a.active {
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            color: #fff;
-        }
-
-        .touch-controls {
-            display: none;
-        }
-
-        .touch-btn {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: rgba(0, 212, 255, 0.15);
-            border: 2px solid rgba(0, 212, 255, 0.6);
-            color: #00d4ff;
-            font-size: 26px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            transition: transform 0.1s, background 0.1s;
-        }
-
-        .touch-btn:active {
-            transform: scale(0.85);
-            background: rgba(0, 212, 255, 0.35);
-        }
-
-        @media (max-width: 900px), (pointer: coarse) {
-            body {
-                overflow: auto;
-            }
-
-            .game-container {
-                flex-direction: column;
-                align-items: center;
-                padding: 10px;
-                gap: 15px;
-            }
-
-            .side-panel {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 10px;
-                min-width: 0;
-                max-width: 100%;
-            }
-
-            .side-panel .panel-box {
-                padding: 8px 12px;
-            }
-
-            .panel-title {
-                font-size: 11px;
-                margin-bottom: 4px;
-            }
-
-            .stat-value {
-                font-size: 18px;
-            }
-
-            .next-piece {
-                min-height: 60px;
-            }
-
-            .next-piece canvas {
-                width: 70px;
-                height: 56px;
-            }
-
-            .controls {
-                display: none;
-            }
-
-            .game-board {
-                width: min(90vw, 300px);
-                height: auto;
-            }
-
-            .overlay h1 {
-                font-size: 26px;
-            }
-
-            .overlay h2 {
-                font-size: 20px;
-            }
-
-            .overlay p {
-                font-size: 14px;
-            }
-
-            .final-score {
-                font-size: 26px;
-            }
-
-            .btn {
-                padding: 10px 22px;
-                font-size: 14px;
-            }
-
-            .touch-controls {
-                display: flex;
-                flex-wrap: nowrap;
-                justify-content: center;
-                align-items: center;
-                gap: 10px;
-                width: min(90vw, 340px);
-                margin-top: 15px;
-                padding-bottom: env(safe-area-inset-bottom);
-            }
-
-            .touch-btn {
-                flex: 1 1 0;
-                min-width: 48px;
-                max-width: 66px;
-            }
-        }
+        #reservationBtn:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
-    <div class="game-nav">
-        <a href="index.html" class="active">테트리스</a>
-        <a href="bubblebobble.html">버블보블</a>
-    </div>
-    <div class="app">
-    <div class="game-container">
-        <div class="side-panel">
-            <div class="panel-box">
-                <div class="panel-title">Next</div>
-                <div class="next-piece">
-                    <canvas id="nextPiece" width="100" height="80"></canvas>
-                </div>
-            </div>
-            <div class="panel-box">
-                <div class="panel-title">Score</div>
-                <div class="stat-value" id="score">0</div>
-            </div>
-            <div class="panel-box">
-                <div class="panel-title">Level</div>
-                <div class="stat-value" id="level">1</div>
-            </div>
-            <div class="panel-box">
-                <div class="panel-title">Lines</div>
-                <div class="stat-value" id="lines">0</div>
-            </div>
-            <div class="panel-box controls">
-                <div><span>←→</span> 이동</div>
-                <div><span>↑</span> 회전</div>
-                <div><span>↓</span> 소프트 드롭</div>
-                <div><span>Space</span> 하드 드롭</div>
-                <div><span>P</span> 일시정지</div>
-            </div>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WTGMJXJQ"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <header>
+        <h1>○○호텔</h1>
+        <p>편안한 휴식, 최고의 서비스</p>
+    </header>
+    <section class="rooms">
+        <div class="room">
+            <div class="thumb"></div>
+            <div class="body"><h3>스탠다드</h3><p>1인 / 2인 · 80,000원</p></div>
         </div>
-
-        <div class="game-board-container">
-            <canvas id="gameBoard" class="game-board" width="300" height="600"></canvas>
-
-            <div class="overlay" id="startScreen">
-                <h1>테트리스</h1>
-                <p>클래식 퍼즐 게임</p>
-                <button class="btn" id="startBtn">게임 시작</button>
-            </div>
-
-            <div class="overlay hidden" id="pauseScreen">
-                <h1>일시정지</h1>
-                <button class="btn" id="resumeBtn">계속하기</button>
-            </div>
-
-            <div class="overlay hidden" id="gameOverScreen">
-                <h2>게임 오버</h2>
-                <p>최종 점수</p>
-                <div class="final-score" id="finalScore">0</div>
-                <button class="btn" id="restartBtn">다시하기</button>
-            </div>
+        <div class="room">
+            <div class="thumb"></div>
+            <div class="body"><h3>디럭스</h3><p>2인 · 120,000원</p></div>
         </div>
+        <div class="room">
+            <div class="thumb"></div>
+            <div class="body"><h3>스위트</h3><p>2~4인 · 200,000원</p></div>
+        </div>
+    </section>
+    <div class="cta">
+        <button id="reservationBtn">예약하기</button>
     </div>
-
-    <div class="touch-controls">
-        <div class="touch-btn" id="leftBtn">◀</div>
-        <div class="touch-btn" id="downBtn">▼</div>
-        <div class="touch-btn" id="rotateBtn">↻</div>
-        <div class="touch-btn" id="dropBtn">⤓</div>
-        <div class="touch-btn" id="rightBtn">▶</div>
-    </div>
-
-    <script src="tetris.js"></script>
+    <script>
+        document.getElementById('reservationBtn').addEventListener('click', function () {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                event: 'reservation_click',
+                hotel_name: '○○호텔'
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,86 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-10-11 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "name": "○○호텔 홈페이지 - 실습 설정",
+    "description": "GA4 기본 연결 + 예약 버튼 클릭 트리거 + reservation_click 이벤트 태그",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "○○호텔 홈페이지",
+      "publicId": "GTM-WTGMJXJQ",
+      "domainName": [],
+      "fingerprint": "",
+      "timeZoneCountryId": "KR",
+      "timeZoneId": "Asia/Seoul",
+      "notes": "",
+      "usageContext": ["WEB"],
+      "tagManagerUrl": ""
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "GA4 기본 연결 (Google 태그)",
+        "type": "googtag",
+        "parameter": [
+          { "type": "TEMPLATE", "key": "tagId", "value": "G-M5CEFHBY0W" }
+        ],
+        "fingerprint": "",
+        "firingTriggerId": ["2147479553"],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": { "type": "MAP" },
+        "consentSettings": { "consentStatus": "NOT_SET" }
+      },
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "2",
+        "name": "GA4 이벤트 - reservation_click",
+        "type": "gaawe",
+        "parameter": [
+          { "type": "TEMPLATE", "key": "eventName", "value": "reservation_click" },
+          { "type": "LIST", "key": "eventParameters", "list": [
+            { "type": "MAP", "map": [
+              { "type": "TEMPLATE", "key": "name", "value": "hotel_name" },
+              { "type": "TEMPLATE", "key": "value", "value": "○○호텔" }
+            ] }
+          ] },
+          { "type": "TEMPLATE", "key": "measurementIdOverride", "value": "G-M5CEFHBY0W" }
+        ],
+        "fingerprint": "",
+        "firingTriggerId": ["1"],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": { "type": "MAP" },
+        "consentSettings": { "consentStatus": "NOT_SET" }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "1",
+        "name": "예약 버튼 클릭",
+        "type": "CLICK",
+        "parameter": [
+          { "type": "TEMPLATE", "key": "eventName", "value": "gtm.click" },
+          { "type": "BOOLEAN", "key": "useEscape", "value": "false" },
+          { "type": "LIST", "key": "filter", "list": [
+            { "type": "MAP", "map": [
+              { "type": "TEMPLATE", "key": "parameter", "value": "{{Click ID}}" },
+              { "type": "TEMPLATE", "key": "matchType", "value": "EQUALS" },
+              { "type": "TEMPLATE", "key": "value", "value": "reservationBtn" }
+            ] }
+          ] }
+        ],
+        "fingerprint": ""
+      }
+    ],
+    "variable": []
+  }
+}
